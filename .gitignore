@@ -5,6 +5,9 @@ __pycache__/
 
 # C extensions
 *.so
+logs/
+mini_speech_commands/
+speech_model.keras
 
 # Distribution / packaging
 .Python
