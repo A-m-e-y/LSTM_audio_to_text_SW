@@ -1,5 +1,7 @@
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')
+tf.config.run_functions_eagerly(True)
+
 import librosa
 import numpy as np
 import sys
@@ -8,6 +10,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import time
 from glob import glob
 from custom_lstm_cell import CustomLSTMCell
+import cProfile
+import pstats
 
 # ========== Config ==========
 SAMPLE_RATE = 16000
@@ -128,6 +132,7 @@ def run_inference(wav_path, batch=32):
         [mfcc], maxlen=MAX_LEN, padding='post', dtype='float32')
 
     passes = np.repeat(mfcc, batch, axis=0)
+
     start_time = time.perf_counter()
     pred = model.predict(passes)
     elapsed = time.perf_counter() - start_time
@@ -187,6 +192,11 @@ def profile_inference(wav_path, log_dir="logs"):
 
 # ========== CLI ==========
 if __name__ == '__main__':
+    
+    # ➡️ Start profiling
+    profiler = cProfile.Profile()
+    profiler.enable()
+
     if len(sys.argv) < 2:
         print("Usage:")
         print("  python lstm_speech_commands.py train_fast <num_per_label>")
@@ -221,3 +231,12 @@ if __name__ == '__main__':
 
     else:
         print("❌ Unknown command. Use 'train_fast', 'train_full', or 'infer'")
+
+        # ➡️ Stop profiling
+    profiler.disable()
+    profiler.dump_stats('profile_output.prof')  # Save profile output
+
+    # ➡️ (Optional) Quick human-readable text output
+    stats = pstats.Stats(profiler)
+    stats.sort_stats('cumulative').print_stats('sw_dot')  # Print stats for function named "sw_dot"
+
