@@ -1,4 +1,7 @@
 import tensorflow as tf
+tf.get_logger().setLevel('ERROR')
+tf.config.run_functions_eagerly(True)
+
 import numpy as np
 from keras.saving import register_keras_serializable
 

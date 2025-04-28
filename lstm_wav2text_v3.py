@@ -238,5 +238,5 @@ if __name__ == '__main__':
 
     # ➡️ (Optional) Quick human-readable text output
     stats = pstats.Stats(profiler)
-    stats.sort_stats('cumulative').print_stats('sw_dot')  # Print stats for function named "sw_dot"
+    stats.sort_stats('cumulative').print_stats('custom_lstm_cell')  # Print stats for function named "sw_dot"
 
